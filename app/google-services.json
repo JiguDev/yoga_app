@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "687994333817",
+    "firebase_url": "https://yoga-app-c0afc-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "yoga-app-c0afc",
+    "storage_bucket": "yoga-app-c0afc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:687994333817:android:95b195b1ecf3e4d3d782a8",
+        "android_client_info": {
+          "package_name": "com.example.yogaapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBygYRgMNuJ6mxz7SWOB-R_qA0vJ4gyZa8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

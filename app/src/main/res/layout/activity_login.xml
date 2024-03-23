@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    tools:context=".Login">
+
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/progressIndicator"
+        android:layout_width="50dp"
+        android:indeterminate="true"
+        android:layout_gravity="center"
+        android:layout_height="50dp" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        style="@style/Widget.Material3.CardView.Filled"
+        android:layout_marginLeft="14dp"
+        android:layout_marginRight="14dp"
+        android:layout_height="wrap_content">
+    <LinearLayout
+        android:id="@+id/phoneLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="10dp"
+        android:gravity="center"
+        android:orientation="vertical">
+
+       <com.google.android.material.card.MaterialCardView
+           style="@style/Widget.Material3.CardView.Elevated"
+           android:layout_width="match_parent"
+           android:layout_marginLeft="14dp"
+           android:layout_marginRight="14dp"
+           android:layout_height="wrap_content">
+           <EditText
+               android:id="@+id/phoneNumber"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_margin="15dp"
+               android:hint="number" />
+       </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            style="@style/Widget.Material3.ExtendedFloatingActionButton.Primary"
+            android:id="@+id/loginButon"
+            android:layout_margin="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Send OTP" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/otpLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingTop="10dp"
+        android:orientation="vertical"
+        android:visibility="gone">
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            style="@style/Widget.Material3.CardView.Elevated"
+            android:layout_marginLeft="14dp"
+            android:layout_marginRight="14dp"
+            android:layout_height="wrap_content">
+            <EditText
+                android:id="@+id/otp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:hint="otp" />
+        </com.google.android.material.card.MaterialCardView>
+
+
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            style="@style/Widget.Material3.ExtendedFloatingActionButton.Primary"
+            android:id="@+id/verifyOtpButon"
+            android:layout_margin="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Verify OTP" />
+
+    </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+
+</LinearLayout>
