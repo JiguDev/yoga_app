@@ -4,49 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:gravity="center"
-    tools:context=".MainActivity">
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Logout"
-        android:id="@+id/loginButton"
-        />
-    <com.google.android.material.divider.MaterialDivider
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="invisible"
-        android:layout_weight="1"
-        />
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="" />
+    android:orientation="vertical"
+    tools:context=".views.MainActivity">
 
-    <EditText
+    <androidx.fragment.app.FragmentContainerView
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:id="@+id/nav_host_fragment"
+        app:navGraph="@navigation/nav_graph"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Enter something"
-        android:layout_marginLeft="14dp"
-        android:layout_marginRight="14dp"
-        android:id="@+id/editText"/>
-
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Do Something"
-        />
-
-    <com.google.android.material.divider.MaterialDivider
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="invisible"
-        android:layout_weight="1"
-        />
-
+        android:layout_height="match_parent" />
 
 
 </LinearLayout>
