@@ -16,5 +16,10 @@
     <fragment
         android:id="@+id/courseFormFragment"
         android:name="com.example.yogaapp.views.fragments.CourseFormFragment"
-        android:label="CourseFormFragment" />
+        tools:layout="@layout/fragment_course_form"
+        android:label="CourseFormFragment" >
+        <argument
+            android:name="ref"
+            app:argType="string" />
+    </fragment>
 </navigation>

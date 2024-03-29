@@ -4,8 +4,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.yogaapp.databinding.CourseListItemBinding
+import com.example.yogaapp.views.fragments.CourseFragmentDirections
 
 class CourseRecyclerViewAdapter : RecyclerView.Adapter<CourseRecyclerViewAdapter.ViewHolder>() {
 
@@ -46,5 +48,17 @@ class CourseRecyclerViewAdapter : RecyclerView.Adapter<CourseRecyclerViewAdapter
             UI.image.visibility = View.GONE
             UI.addImg.visibility = View.VISIBLE
         }
+        UI.card.setOnClickListener {
+            onPressListener?.invoke(item)
+            //navigate to course form
+
+            it.findNavController().navigate(CourseFragmentDirections.actionCourseFragmentToCourseFormFragment(item))
+
+        }
+    }
+
+    private var onPressListener: ((String) -> Unit)? = null
+    fun setOnPressListener(listener: (String) -> Unit) {
+        onPressListener = listener
     }
 }
