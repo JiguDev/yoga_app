@@ -13,6 +13,16 @@
         android:orientation="vertical"
         tools:context=".views.fragments.CourseFragment">
 
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:id="@+id/progressIndicator"
+            android:indeterminate="true"
+            app:trackThickness="5dp"
+            app:trackCornerRadius="10dp"
+            android:visibility="gone" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"

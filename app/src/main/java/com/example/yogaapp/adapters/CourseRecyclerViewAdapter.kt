@@ -7,23 +7,13 @@ import android.widget.TextView
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.yogaapp.databinding.CourseListItemBinding
+import com.example.yogaapp.models.Course
 import com.example.yogaapp.views.fragments.CourseFragmentDirections
 
 class CourseRecyclerViewAdapter : RecyclerView.Adapter<CourseRecyclerViewAdapter.ViewHolder>() {
 
-    private var courseList: List<String> =
-        listOf(
-            "Course 1",
-            "Course 2",
-            "Course 3",
-            "Course 4",
-            "Course 5",
-            "Course 6",
-            "Course 7",
-            "Course 8",
-            "Course 9",
-            "Course 10"
-        )
+    private var courseList: List<Course> =
+        listOf()
 
     class ViewHolder(val binding: CourseListItemBinding) : RecyclerView.ViewHolder(binding.root)
 
@@ -42,7 +32,7 @@ class CourseRecyclerViewAdapter : RecyclerView.Adapter<CourseRecyclerViewAdapter
         val UI = holder.binding
         val item = courseList[position]
         if (item != courseList.last()) {
-            UI.name.text = item
+            UI.name.text = item.courseTitle
         } else {
             UI.name.visibility = View.GONE
             UI.image.visibility = View.GONE
@@ -50,15 +40,28 @@ class CourseRecyclerViewAdapter : RecyclerView.Adapter<CourseRecyclerViewAdapter
         }
         UI.card.setOnClickListener {
             onPressListener?.invoke(item)
-            //navigate to course form
-
-            it.findNavController().navigate(CourseFragmentDirections.actionCourseFragmentToCourseFormFragment(item))
+            it.findNavController().navigate(CourseFragmentDirections.actionCourseFragmentToCourseFormFragment(item.toJSON()))
 
         }
     }
 
-    private var onPressListener: ((String) -> Unit)? = null
-    fun setOnPressListener(listener: (String) -> Unit) {
+    private var onPressListener: ((Course) -> Unit)? = null
+    fun setOnPressListener(listener: (Course) -> Unit) {
         onPressListener = listener
+    }
+    fun setCourseList(list: List<Course>) {
+        val temp = mutableListOf<Course>()
+        temp.addAll(list)
+        temp.add(Course(
+            courseId = null,
+            courseTitle = null,
+            courseDescription = null,
+            courseDetails = null,
+            courseLevel = null,
+            img = null,
+            isCourseCompleted = false
+        ))
+        courseList = temp
+        notifyDataSetChanged()
     }
 }
