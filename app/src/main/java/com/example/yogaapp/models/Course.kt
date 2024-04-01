@@ -4,12 +4,12 @@ import com.google.gson.Gson
 
 data class Course(
     var courseId: String? = null,
-    val courseTitle: String? = null,
-    val courseDescription: String? = null,
-    val courseDetails: String? = null,
-    val courseLevel: String? = null,
-    val img: String? = null,
-    val isCourseCompleted: Boolean? = null
+    var courseTitle: String? = null,
+    var courseDescription: String? = null,
+    var courseDetails: String? = null,
+    var courseLevel: String? = null,
+    var img: String? = null,
+    var courseCompleted: Boolean? = null
 ){
     fun toJSON():String{
         val gson = Gson()

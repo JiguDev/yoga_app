@@ -40,8 +40,6 @@ class CourseRecyclerViewAdapter : RecyclerView.Adapter<CourseRecyclerViewAdapter
         }
         UI.card.setOnClickListener {
             onPressListener?.invoke(item)
-            it.findNavController().navigate(CourseFragmentDirections.actionCourseFragmentToCourseFormFragment(item.toJSON()))
-
         }
     }
 
@@ -59,7 +57,7 @@ class CourseRecyclerViewAdapter : RecyclerView.Adapter<CourseRecyclerViewAdapter
             courseDetails = null,
             courseLevel = null,
             img = null,
-            isCourseCompleted = false
+            courseCompleted = null
         ))
         courseList = temp
         notifyDataSetChanged()

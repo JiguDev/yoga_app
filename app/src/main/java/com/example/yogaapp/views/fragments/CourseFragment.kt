@@ -7,6 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.yogaapp.R
 import com.example.yogaapp.adapters.CourseRecyclerViewAdapter
@@ -26,8 +28,8 @@ class CourseFragment : Fragment() {
     private var _binding: FragmentCourseBinding? = null
     private val UI get() = _binding!!
 
-    private lateinit var recyclerView : RecyclerView
-    private lateinit var progressIndicator : CircularProgressIndicator
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var progressIndicator: CircularProgressIndicator
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,7 +47,14 @@ class CourseFragment : Fragment() {
         recyclerView.layoutManager = flexboxLayoutManager
 
         courseRecyclerViewAdapter.setOnPressListener {
-
+            //Log.d(TAG, "onCreateView: ${it}")
+            val json = it.toJSON()
+            //Log.d(TAG, "onCreateView: ${json}")
+            findNavController().navigate(
+                CourseFragmentDirections.actionCourseFragmentToCourseFormFragment(
+                    json
+                )
+            )
         }
         getCourseListFromFirebase(courseRecyclerViewAdapter)
         return UI.root
@@ -56,16 +65,16 @@ class CourseFragment : Fragment() {
         val ref = Firebase.database.getReference("courses")
         ref.get().addOnSuccessListener {
             val courseList = it.children.map { it.getValue(Course::class.java) }
+            //Log.d(TAG, "getCourseListFromFirebase: ${courseList}")
             courseRecyclerViewAdapter.setCourseList(courseList as List<Course>)
             loading(false)
         }.addOnFailureListener {
-            Log.d(TAG, "getCourseListFromFirebase: ${it.message}")
             Snackbar.make(UI.root, "Failed to get course list", Snackbar.LENGTH_LONG).show()
             loading(false)
         }
     }
 
-    fun loading(toLoad: Boolean){
+    fun loading(toLoad: Boolean) {
         if (toLoad) {
             progressIndicator.show()
             recyclerView.visibility = View.GONE
