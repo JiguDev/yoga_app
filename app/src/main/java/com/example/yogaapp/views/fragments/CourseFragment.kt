@@ -18,8 +18,13 @@ import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.ktx.storage
 
 val TAG = "gfx"
 
@@ -31,14 +36,18 @@ class CourseFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var progressIndicator: CircularProgressIndicator
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
         _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_course, container, false)
 
         recyclerView = UI.recyclerView
         progressIndicator = UI.progressIndicator
+
+        loading(true)
 
         val courseRecyclerViewAdapter = CourseRecyclerViewAdapter()
         recyclerView.adapter = courseRecyclerViewAdapter
@@ -56,22 +65,34 @@ class CourseFragment : Fragment() {
                 )
             )
         }
+
         getCourseListFromFirebase(courseRecyclerViewAdapter)
         return UI.root
     }
 
     fun getCourseListFromFirebase(courseRecyclerViewAdapter: CourseRecyclerViewAdapter) {
-        loading(true)
         val ref = Firebase.database.getReference("courses")
-        ref.get().addOnSuccessListener {
-            val courseList = it.children.map { it.getValue(Course::class.java) }
-            //Log.d(TAG, "getCourseListFromFirebase: ${courseList}")
-            courseRecyclerViewAdapter.setCourseList(courseList as List<Course>)
-            loading(false)
-        }.addOnFailureListener {
-            Snackbar.make(UI.root, "Failed to get course list", Snackbar.LENGTH_LONG).show()
-            loading(false)
-        }
+        ref.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val courseList = snapshot.children.map { it.getValue(Course::class.java) }
+                courseRecyclerViewAdapter.setCourseList(courseList as List<Course>)
+                loading(false)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Snackbar.make(UI.root, "Failed to get course list", Snackbar.LENGTH_LONG).show()
+                loading(false)
+            }
+        })
+//        ref.get().addOnSuccessListener {
+//            val courseList = it.children.map { it.getValue(Course::class.java) }
+//            //Log.d(TAG, "getCourseListFromFirebase: ${courseList}")
+//            courseRecyclerViewAdapter.setCourseList(courseList as List<Course>)
+//            loading(false)
+//        }.addOnFailureListener {
+//            Snackbar.make(UI.root, "Failed to get course list", Snackbar.LENGTH_LONG).show()
+//            loading(false)
+//        }
     }
 
     fun loading(toLoad: Boolean) {

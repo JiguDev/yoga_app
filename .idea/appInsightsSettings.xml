@@ -9,9 +9,9 @@
               <option name="connection">
                 <ConnectionSetting>
                   <option name="appId" value="com.example.yogaapp" />
-                  <option name="mobileSdkAppId" value="1:687994333817:android:95b195b1ecf3e4d3d782a8" />
-                  <option name="projectId" value="yoga-app-c0afc" />
-                  <option name="projectNumber" value="687994333817" />
+                  <option name="mobileSdkAppId" value="1:775416111784:android:1d4e292b260d869ab8d89d" />
+                  <option name="projectId" value="yogaapp-514d1" />
+                  <option name="projectNumber" value="775416111784" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

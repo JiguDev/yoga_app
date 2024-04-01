@@ -1,6 +1,11 @@
 package com.example.yogaapp.views.fragments
 
+import android.app.Activity.RESULT_OK
+import android.content.Intent
+import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -15,11 +20,11 @@ import com.example.yogaapp.helpers.setSpinnerAdapter
 import com.example.yogaapp.models.Course
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.ktx.storage
 import com.google.gson.Gson
-import kotlin.math.log
 
 private const val YES = "Yes"
 
@@ -37,12 +42,20 @@ private const val SELECT_ACTIVE_OR_NOT = "Select Active or Not"
 
 class CourseFormFragment : Fragment() {
 
+    //
+
+    //
+
     private var _binding: FragmentCourseFormBinding? = null
     private val UI get() = _binding!!
 
     private val args: CourseFormFragmentArgs by navArgs()
 
     var course = Course()
+
+    var fileUri: Uri? = null
+
+    lateinit var ref: DatabaseReference
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -52,8 +65,11 @@ class CourseFormFragment : Fragment() {
             DataBindingUtil.inflate(inflater, R.layout.fragment_course_form, container, false)
 
         val gson = Gson()
-
         course = gson.fromJson(args.ref, Course::class.java)
+
+        ref = Firebase.database.getReference("courses")
+
+        makeKey()
 
         val courseTitleEditText = UI.courseTitleEditText
         val courseDescriptionEditText = UI.courseDescriptionEditText
@@ -69,7 +85,15 @@ class CourseFormFragment : Fragment() {
         setValuesToUI(course)
 
         courseImageCardView.setOnClickListener {
-
+            val intent = Intent()
+            intent.type = "image/*"
+            intent.action = Intent.ACTION_GET_CONTENT
+            startActivityForResult(
+                Intent.createChooser(
+                    intent, "Select Picture"
+                ),
+                1
+            )
         }
 
         saveCourseButton.setOnClickListener {
@@ -80,45 +104,40 @@ class CourseFormFragment : Fragment() {
             val courseLevel = courseLevelSpinner.selectedItem.toString()
             val courseCompleted = when (courseActiveSpinner.selectedItem) {
                 YES -> true
-                NO ->  false
-                else ->  null
+                NO -> false
+                else -> null
             }
-            val img = "https://www.example.com/image.jpg"
 
             course.courseTitle = courseTitle.trim()
             course.courseDescription = courseDescription.trim()
             course.courseDetails = courseDetails.trim()
             course.courseLevel = courseLevel
             course.courseCompleted = courseCompleted
-            course.img = img
 
-            val ref = Firebase.database.getReference("courses")
-            if(validateCourseValues(course)){
-                storeCourseInFirebase(course, ref)
-            }
-            else{
+            if (validateCourseValues(course)) {
+                uploadImageToFirebaseStorage()
+            } else {
                 Snackbar.make(UI.root, "Please fill all fields", Snackbar.LENGTH_SHORT).show()
             }
         }
-
         return UI.root
     }
 
-    fun storeCourseInFirebase(
-        course: Course, ref: DatabaseReference
-    ) {
-        Log.d(TAG, "storeCourseInFirebase: ${course.courseId}")
+    fun storeCourseInFirebase() {
+        ref.child(course.courseId!!).setValue(course).addOnCompleteListener {
+            findNavController().popBackStack()
+        }.addOnFailureListener {
+            showLoading(false)
+            Snackbar.make(UI.root, "Failed to save course", Snackbar.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun makeKey() {
         if (course.courseId == null) {
             val key = ref.push().key
             key?.let {
                 course.courseId = key
             }
-        }
-        ref.child(course.courseId!!).setValue(course).addOnCompleteListener {
-            // Log.d("gfx", "storeCourseInFirebase: ${it.isSuccessful}")
-            findNavController().popBackStack()
-        }.addOnFailureListener {
-            //Log.d("gfx", "storeCourseInFirebase: ${it.message}")
         }
     }
 
@@ -135,7 +154,6 @@ class CourseFormFragment : Fragment() {
                 else -> 0
             }
         )
-        Log.d(TAG, "setValuesToUI: ${course.courseCompleted}")
         UI.courseActiveSpinner.setSelection(
             when (course.courseCompleted) {
                 true -> 1
@@ -144,6 +162,7 @@ class CourseFormFragment : Fragment() {
             }
         )
     }
+
     //function to validate course values
     fun validateCourseValues(course: Course): Boolean {
         return course.courseTitle != null
@@ -155,5 +174,61 @@ class CourseFormFragment : Fragment() {
                 && course.courseLevel != null
                 && course.courseLevel != SELECT_LEVEL
                 && course.courseCompleted != null
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 1 && resultCode == RESULT_OK && data != null && data.data != null) {
+            fileUri = data.data
+            try {
+                val bitmap: Bitmap =
+                    MediaStore.Images.Media.getBitmap(requireActivity().contentResolver, fileUri)
+                UI.courseImageDisplayView.setImageBitmap(bitmap)
+                UI.courseImageDisplayViewCard.visibility = View.VISIBLE
+                course.img = fileUri!!.getFileTypeExtension()
+            } catch (e: Exception) {
+                Log.d(TAG, "onActivityResult: ${e.message}")
+            }
+        }
+    }
+
+    fun uploadImageToFirebaseStorage(): Unit {
+        if (course.courseId == null || fileUri == null || course.courseId == "") {
+            return
+        }
+        if (fileUri != null) {
+            showLoading(true)
+            val ref: StorageReference =
+                Firebase.storage.getReference().child("images/${course.courseId}")
+            ref.putFile(fileUri!!)
+                .addOnSuccessListener {
+                    Snackbar.make(UI.root, "Image uploaded successfully", Snackbar.LENGTH_SHORT)
+                        .show()
+                    storeCourseInFirebase()
+                }.addOnFailureListener {
+                    Snackbar.make(
+                        UI.root,
+                        "Failed to upload image : ${it.message}",
+                        Snackbar.LENGTH_SHORT
+                    ).show()
+                    showLoading(false)
+                }
+        }
+    }
+
+    fun Uri.getFileTypeExtension(): String {
+        val cr = requireActivity().contentResolver
+        val mime = cr.getType(this)
+        return mime?.substring(mime.indexOf("/") + 1) ?: ""
+    }
+
+    fun showLoading(toLoad: Boolean) {
+        if (toLoad) {
+            UI.courseImageUploadProgressIndicator.show()
+            UI.saveCourseButton.hide()
+        } else {
+            UI.courseImageUploadProgressIndicator.hide()
+            UI.saveCourseButton.show()
+        }
     }
 }
