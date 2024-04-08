@@ -97,10 +97,10 @@ class CourseFragment : Fragment() {
 
     fun loading(toLoad: Boolean) {
         if (toLoad) {
-            progressIndicator.show()
+            progressIndicator.visibility = View.VISIBLE
             recyclerView.visibility = View.GONE
         } else {
-            progressIndicator.hide()
+            progressIndicator.visibility = View.GONE
             recyclerView.visibility = View.VISIBLE
         }
     }

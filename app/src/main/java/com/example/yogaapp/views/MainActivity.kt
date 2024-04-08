@@ -1,23 +1,35 @@
 package com.example.yogaapp.views
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Button
-import android.widget.TextView
-import androidx.navigation.fragment.NavHostFragment
+import android.util.Log
+import android.view.View
+import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
 import com.example.yogaapp.R
+import com.example.yogaapp.databinding.ActivityMainBinding
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.ValueEventListener
-import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
+private const val TAG = "gfx"
+
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var UI: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        UI= DataBindingUtil.setContentView(this,R.layout.activity_main);
+
+        UI.alert.setOnClickListener {
+            toggleAlert()
+        }
+
+        UI.exit.setOnClickListener {
+            signOut()
+        }
+
+        UI.lifecycleOwner = this
 
         checkFirebaseAuth()
 
@@ -38,6 +50,17 @@ class MainActivity : AppCompatActivity() {
     private fun signOut() {
         Firebase.auth.signOut()
         checkFirebaseAuth()
+    }
+
+    private fun toggleAlert() {
+        UI.notificationFragment.visibility =
+            if (UI.notificationFragment.visibility == View.VISIBLE) {
+                UI.navHostFragment.visibility = View.VISIBLE
+                View.GONE
+            } else {
+                UI.navHostFragment.visibility = View.GONE
+                View.VISIBLE
+            }
     }
 
 }

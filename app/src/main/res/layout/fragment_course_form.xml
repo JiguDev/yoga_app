@@ -165,6 +165,7 @@
                 android:id="@+id/courseImageUploadProgressIndicator"
                 android:layout_gravity="center"
                 app:trackCornerRadius="10dp"
+                android:visibility="gone"
                 android:progress="0"
                 />
 

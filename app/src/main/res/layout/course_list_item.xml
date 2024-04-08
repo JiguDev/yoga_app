@@ -50,12 +50,12 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:gravity="center"
-                    android:shadowColor="@color/black"
+                    android:shadowColor="@color/white"
                     android:shadowDx="1"
                     android:shadowDy="1"
                     android:shadowRadius="2"
                     android:text="item"
-                    android:textColor="@color/white" />
+                    android:textColor="@color/black" />
                 <ImageView
                     android:id="@+id/add_img"
                     android:layout_width="50dp"

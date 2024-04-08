@@ -124,6 +124,7 @@ class CourseFormFragment : Fragment() {
     }
 
     fun storeCourseInFirebase() {
+        showLoading(true)
         ref.child(course.courseId!!).setValue(course).addOnCompleteListener {
             findNavController().popBackStack()
         }.addOnFailureListener {
@@ -193,9 +194,6 @@ class CourseFormFragment : Fragment() {
     }
 
     fun uploadImageToFirebaseStorage(): Unit {
-        if (course.courseId == null || fileUri == null || course.courseId == "") {
-            return
-        }
         if (fileUri != null) {
             showLoading(true)
             val ref: StorageReference =
@@ -204,7 +202,19 @@ class CourseFormFragment : Fragment() {
                 .addOnSuccessListener {
                     Snackbar.make(UI.root, "Image uploaded successfully", Snackbar.LENGTH_SHORT)
                         .show()
-                    storeCourseInFirebase()
+                    val file = it.metadata
+                    file?.reference?.downloadUrl?.addOnSuccessListener {
+                        course.img = it.toString()
+                        storeCourseInFirebase()
+                    }?.addOnFailureListener {
+                        Snackbar.make(
+                            UI.root,
+                            "Failed to get image url : ${it.message}",
+                            Snackbar.LENGTH_SHORT
+                        ).show()
+                        showLoading(false)
+                    }
+
                 }.addOnFailureListener {
                     Snackbar.make(
                         UI.root,
@@ -213,6 +223,9 @@ class CourseFormFragment : Fragment() {
                     ).show()
                     showLoading(false)
                 }
+        }
+        if(fileUri == null && validateCourseValues(course)){
+            storeCourseInFirebase()
         }
     }
 

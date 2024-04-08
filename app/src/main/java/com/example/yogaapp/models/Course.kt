@@ -9,7 +9,8 @@ data class Course(
     var courseDetails: String? = null,
     var courseLevel: String? = null,
     var img: String? = null,
-    var courseCompleted: Boolean? = null
+    var courseCompleted: Boolean? = null,
+    var active:Boolean? = false
 ){
     fun toJSON():String{
         val gson = Gson()

@@ -80,7 +80,7 @@ class CourseRecyclerViewAdapter : RecyclerView.Adapter<CourseRecyclerViewAdapter
     }
     private fun loadImageFromFirebaseStorage(gsReference: StorageReference, image: ImageView,placeholder: ImageView) {
         gsReference.downloadUrl.addOnSuccessListener {
-            Log.d(TAG, "loadImageFromFirebaseStorage: $it")
+            //Log.d(TAG, "loadImageFromFirebaseStorage: $it")
             Glide.with(image.context)
                 .load(it)
                 .into(image)
